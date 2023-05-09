@@ -1,109 +1,123 @@
-// If you would like to see some examples of similar code to make an interface interact with an API, 
-// check out the coin-server example from a previous COMP 426 semester.
-// https://github.com/jdmar3/coinserver
-// If you would like to see some examples of similar code to make an interface interact with an API, 
+// If you would like to see some examples of similar code to make an interface interact with an API,
 // check out the coin-server example from a previous COMP 426 semester.
 // https://github.com/jdmar3/coinserver
 
+const gameModeSelect = document.getElementById("game-mode");
+const playModeInputs = document.getElementsByName("play-mode");
+const choiceInputs = document.getElementsByName("choice");
+const playButton = document.getElementById("play-button");
+const resetButton = document.getElementById("reset-button");
+const resultsSection = document.getElementById("results-section");
+const resultText = document.getElementById("result-text");
 
-//showing shot options based off whether there is an opponent
+let gameMode = gameModeSelect.value;
+let playMode = playModeInputs[0].value;
 
+gameModeSelect.addEventListener("change", () => {
+  gameMode = gameModeSelect.value;
+  updateChoices();
+});
 
-function shotView() {
-    $('.choices').attr('disabled', false);
-    let checker = document.getElementById('opponent');
-    
-    if (checker.checked == true) {
-      // If true, check which game is chosen
-      if ($('#rps').is(':checked')) {
-        $('.moves').css('visibility', 'visible');
-        $('.rpslsmoves').hide();
-      } else {
-        $('.moves').css('visibility', 'visible');
-        $('.rpslsmoves').show();
-      }
+for (let input of playModeInputs) {
+  input.addEventListener("change", () => {
+    if (input.value === "random") {
+      document.getElementById("choices-section").style.display = "none";
     } else {
-      // Always show Rock, Paper, and Scissors options
-      $('.moves').css('visibility', 'visible');
-      // Show Lizard and Spock options only when the corresponding radio button is checked
-      if ($('#rpsls').is(':checked')) {
-        $('.rpslsmoves').show();
-      } else {
-        $('.rpslsmoves').hide();
-      }
+      document.getElementById("choices-section").style.display = "inline-block";
+    }
+
+    playMode = input.value;
+  });
+}
+
+playButton.addEventListener("click", async () => {
+  const choice = getSelectedChoice();
+  const playMode = getSelectedPlayMode();
+
+  let url = `http://localhost:8080/app/${gameMode}/`;
+
+  console.log(choice, playMode, url);
+
+  if (playMode === "opponent") {
+    url += `play/${choice}`;
+  }
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    console.log(data);
+
+    displayResult(data);
+  } catch (error) {
+    alert("An error occurred. Please try again.");
+  }
+
+  //hide everything & show reset
+  document.getElementById("game-mode-section").style.display = "none";
+  document.getElementById("play-mode-section").style.display = "none";
+  document.getElementById("choices-section").style.display = "none";
+  document.getElementById("play-button").style.display = "none";
+  document.getElementById("reset-button").style.display = "inline-block";
+});
+
+resetButton.addEventListener("click", () => {
+  resultText.textContent = "";
+  resultsSection.style.display = "none";
+
+  //show everything & hide reset
+  document.getElementById("game-mode-section").style.display = "block";
+  document.getElementById("play-mode-section").style.display = "block";
+
+  if (playMode === "opponent") {
+    document.getElementById("choices-section").style.display = "block";
+  }
+
+  document.getElementById("play-button").style.display = "inline-block";
+  document.getElementById("reset-button").style.display = "none";
+});
+
+function updateChoices() {
+  if (gameMode === "rps") {
+    document.getElementById("lizard").style.display = "none";
+    document.querySelector('label[for="lizard"]').style.display = "none";
+    document.getElementById("spock").style.display = "none";
+    document.querySelector('label[for="spock"]').style.display = "none";
+  } else {
+    document.getElementById("lizard").style.display = "inline-block";
+    document.querySelector('label[for="lizard"]').style.display =
+      "inline-block";
+    document.getElementById("spock").style.display = "inline-block";
+    document.querySelector('label[for="spock"]').style.display = "inline-block";
+  }
+
+  document.getElementById("rock").checked = true;
+}
+
+function getSelectedChoice() {
+  for (let input of choiceInputs) {
+    if (input.checked) {
+      return input.value;
     }
   }
-  
-  
-
-function showResults(){
-    $('.results').show();
-    $('input').attr('disabled',true);
-    $('#play').attr('disabled',true);
-
 }
-function hideResults(){
-    $('.results').hide();
-    $('#play').attr('disabled',false);
 
-}
-function showRules(r){
-    if (r == 1){
-        $('.rules').css('visibility', 'visible');
-        $('#show').hide();
-        $('#hide').show();
-    } else {
-        $('.rules').css('visibility', 'hidden');
-        $('#show').show();
-        $('#hide').hide();
+function getSelectedPlayMode() {
+  for (let input of playModeInputs) {
+    if (input.checked) {
+      return input.value;
     }
+  }
 }
-function resetPage(){
-    shotView();
-    hideResults();
 
+function displayResult(result) {
+  resultsSection.style.display = "block";
+
+  if (playMode === "opponent") {
+    resultText.textContent = `You played: ${result.player.toUpperCase()}. Opponent played: ${result.opponent.toUpperCase()}. Result: ${result.result.toUpperCase()}.`;
+  } else {
+    resultText.textContent = `Random draw: ${result.player.toUpperCase()}.`;
+  }
 }
-async function playGame(){
-    var str = "";
-    try {
-    let game = $('input[type=radio][name=gameStyle]:checked').val();
-    let shot = $('input[type=radio][name=shot]:checked').val();
-    let url = '/app/'+ game + '/play/';
-    
-    if($('#opponent').is(':checked')){
-        url = url + "?shot=" + shot;
-    }
-    console.log(url)
-    console.log(shot)
 
-    let response = await fetch(url);
-    let result = await response.json();
-
-    
-    let title = "";
-
-    if($('#opponent').is(':checked')){
-        $('#opponentImage').attr("src", `img/${result.opponent}.jpg`)
-        $('#playerImage').attr("src", `img/${result.player}.jpg`)
-        str = `You played ${result.player} and your opponent played ${result.opponent}.`;
-        if(result.result == "win"){
-            title = "You Won!!";
-        } else if (result.result == "lose") {
-            title = "Aw You Lost :( Maybe next time!";
-        } else {
-            title = "It's a tie! Could be worse.";
-            str =`Both players played ${result.player}.`
-        }
-        $('.resultTitle').text(title);
-    } else {
-        str = `player played ${result.player}.`;
-    }
-    
-    } catch (error){
-        window.alert("Please make sure that you've chosen which game you want to play and if available select your move.");
-    } finally {
-        $('.resultText').text(str);
-        showResults();
-    }
-
-}
+updateChoices();
