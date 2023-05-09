@@ -1,8 +1,4 @@
 //// Load most basic dependencies
-
-import dotenv from "dotenv";
-dotenv.config();
-
 // Create require function
 // https://nodejs.org/docs/latest-v18.x/api/module.html#modulecreaterequirefilename
 import { createRequire } from "node:module";
