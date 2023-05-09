@@ -2,6 +2,7 @@
 body {
     font-family: 'Times New Roman', Times, serif, sans-serif;
     text-align: center;
+    background-color: #088F8F;
 }
 
 h1 {
@@ -47,6 +48,7 @@ input[type="radio"] {
 }
 
 #gameboard {
+    background-color: #088F8F;
     display: none;
     flex-wrap: wrap;
     justify-content: center;
@@ -54,7 +56,7 @@ input[type="radio"] {
 }
 
 #gameboard button {
-    background-color: #088F8F;
+    background-color: #8f086d;
     border: 2px solid #880808;
     border-radius: 5px;
     font-size: 2em;
