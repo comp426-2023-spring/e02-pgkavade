@@ -1,137 +1,123 @@
-// If you would like to see some examples of similar code to make an interface interact with an API, 
+// If you would like to see some examples of similar code to make an interface interact with an API,
 // check out the coin-server example from a previous COMP 426 semester.
 // https://github.com/jdmar3/coinserver
 
-var opponent = false;
-let choices = ["rock", "paper", "scissors", "lizard", "spock"];
-var rps = true;
-var move = "rock";
-var rps_endpoint = "/app/rps/play/";
-var rpsls_endpoint = "/app/rpsls/play/";
- 
-function playgamefromrpsorrpsls(index) {
-    move = choices[index];
-}
+const gameModeSelect = document.getElementById("game-mode");
+const playModeInputs = document.getElementsByName("play-mode");
+const choiceInputs = document.getElementsByName("choice");
+const playButton = document.getElementById("play-button");
+const resetButton = document.getElementById("reset-button");
+const resultsSection = document.getElementById("results-section");
+const resultText = document.getElementById("result-text");
 
-function firstsubmit() {
-    if (opponent) {
-        
-        document.getElementById("opponent-and-game").hidden = true;
-        document.getElementById("rps-input").hidden = false;
-        if (rps) {
-            document.getElementById("lizard-label").hidden = true;
-            document.getElementById("spock-label").hidden = true;
-            document.getElementById("lizard").hidden = true;
-            document.getElementById("spock").hidden = true;    
-        }
-        
+let gameMode = gameModeSelect.value;
+let playMode = playModeInputs[0].value;
 
-    } else { 
-        if (rps) {
-            console.log("test");
-            var random_move = Math.floor(Math.random() * 3);
-            random_move = choices[random_move];
-            var api_call = rps_endpoint + random_move;
-            console.log(api_call);
-            fetch(api_call).then(response => response.json()).then(data => {
-                document.getElementById("results").innerText = JSON.stringify(data);
-                document.getElementById("opponent-and-game").hidden = true;
-                document.getElementById("results").hidden = false;
-            });
-        } else {
-            
-            var random_move = Math.floor(Math.random() * 5);
-            random_move = choices[random_move];
-            var api_call = rpsls_endpoint + random_move;
-            fetch(api_call).then(response => response.json()).then(data => {
-                document.getElementById("results").innerText = JSON.stringify(data);
-                document.getElementById("opponent-and-game").hidden = true;
-                document.getElementById("results").hidden = false;
-            });
-        }       
-    }
-}
+gameModeSelect.addEventListener("change", () => {
+  gameMode = gameModeSelect.value;
+  updateChoices();
+});
 
-
-function secondsubmit() {
-    document.getElementById("lizard-label").hidden = false;
-    document.getElementById("spock-label").hidden = false;
-    document.getElementById("lizard").hidden = false;
-    document.getElementById("spock").hidden = false;
-    document.getElementById("rps-input").hidden = true;
-
-    if (rps) {
-        var api_call = rps_endpoint + move;
-        fetch(api_call).then(response => response.json()).then(data => {
-            document.getElementById("results").innerText = JSON.stringify(data);
-            document.getElementById("opponent-and-game").hidden = true;
-            document.getElementById("results").hidden = false;
-        });
+for (let input of playModeInputs) {
+  input.addEventListener("change", () => {
+    if (input.value === "random") {
+      document.getElementById("choices-section").style.display = "none";
     } else {
-        var api_call = rpsls_endpoint + move;
-        fetch(api_call).then(response => response.json()).then(data => {
-            document.getElementById("results").innerText = JSON.stringify(data);
-            document.getElementById("opponent-and-game").hidden = true;
-            document.getElementById("results").hidden = false;
-        });
-    }  
+      document.getElementById("choices-section").style.display = "inline-block";
+    }
+
+    playMode = input.value;
+  });
 }
 
+playButton.addEventListener("click", async () => {
+  const choice = getSelectedChoice();
+  const playMode = getSelectedPlayMode();
 
+  let url = `http://localhost:8080/app/${gameMode}/`;
 
-function playingrps() {
-    rps = true;
+  console.log(choice, playMode, url);
+
+  if (playMode === "opponent") {
+    url += `play/${choice}`;
+  }
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    console.log(data);
+
+    displayResult(data);
+  } catch (error) {
+    alert("An error occurred. Please try again.");
+  }
+
+  //hide everything & show reset
+  document.getElementById("game-mode-section").style.display = "none";
+  document.getElementById("play-mode-section").style.display = "none";
+  document.getElementById("choices-section").style.display = "none";
+  document.getElementById("play-button").style.display = "none";
+  document.getElementById("reset-button").style.display = "inline-block";
+});
+
+resetButton.addEventListener("click", () => {
+  resultText.textContent = "";
+  resultsSection.style.display = "none";
+
+  //show everything & hide reset
+  document.getElementById("game-mode-section").style.display = "block";
+  document.getElementById("play-mode-section").style.display = "block";
+
+  if (playMode === "opponent") {
+    document.getElementById("choices-section").style.display = "block";
+  }
+
+  document.getElementById("play-button").style.display = "inline-block";
+  document.getElementById("reset-button").style.display = "none";
+});
+
+function updateChoices() {
+  if (gameMode === "rps") {
+    document.getElementById("lizard").style.display = "none";
+    document.querySelector('label[for="lizard"]').style.display = "none";
+    document.getElementById("spock").style.display = "none";
+    document.querySelector('label[for="spock"]').style.display = "none";
+  } else {
+    document.getElementById("lizard").style.display = "inline-block";
+    document.querySelector('label[for="lizard"]').style.display =
+      "inline-block";
+    document.getElementById("spock").style.display = "inline-block";
+    document.querySelector('label[for="spock"]').style.display = "inline-block";
+  }
+
+  document.getElementById("rock").checked = true;
 }
 
-function playingrpsls() {
-    rps = false;
+function getSelectedChoice() {
+  for (let input of choiceInputs) {
+    if (input.checked) {
+      return input.value;
+    }
+  }
 }
 
-
-function playingopponent() {
-    opponent = !opponent;
+function getSelectedPlayMode() {
+  for (let input of playModeInputs) {
+    if (input.checked) {
+      return input.value;
+    }
+  }
 }
 
+function displayResult(result) {
+  resultsSection.style.display = "block";
 
-function viewrules() {
-    document.getElementById("rules").innerText =
-    `Rules for Rock Paper Scissors:
-    - Scissors CUTS Paper
-    - Paper COVERS Rock
-    - Rock CRUSHES Scissors
-    
-    Rules for the Lizard-Spock Expansion of Rock Paper Scissors:
-    - Scissors CUTS Paper
-    - Paper COVERS Rock
-    - Rock SMOOSHES Lizard
-    - Lizard POISONS Spock
-    - Spock SMASHES Scissors
-    - Scissors DECAPITATES Lizard
-    - Lizard EATS Paper
-    - Paper DISPROVES Spock
-    - Spock VAPORIZES Rock
-    - Rock CRUSHES Scissors`;
-    document.getElementById("rules-button").hidden = true;
-    document.getElementById("rules").hidden = false;
-    document.getElementById("hide-rules-button").hidden = false;
+  if (playMode === "opponent") {
+    resultText.textContent = `You played: ${result.player.toUpperCase()}. Opponent played: ${result.opponent.toUpperCase()}. Result: ${result.result.toUpperCase()}.`;
+  } else {
+    resultText.textContent = `Random draw: ${result.player.toUpperCase()}.`;
+  }
 }
 
-function hiderules() {
-    
-    document.getElementById("rules").hidden = true;
-    document.getElementById("hide-rules-button").hidden = true;
-    document.getElementById("rules-button").hidden = false;
-}
-
-function startOver() {
-    rps = true;
-    opponent = false;
-    move = "rock";
-    document.getElementById("rules-form").reset();
-    document.getElementById("results").innerHTML = "";
-    document.getElementById("rps-input").reset();
-    document.getElementById("opponent-and-game").reset();
-    document.getElementById("results").hidden = true;
-    document.getElementById("rps-input").hidden = true;
-    document.getElementById("opponent-and-game").hidden = false;
-}
+updateChoices();

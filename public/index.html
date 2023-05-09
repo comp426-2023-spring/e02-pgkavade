@@ -1,64 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Rock-Paper-Scissors-Lizard-Spock</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="data:,">
-		<link href="./styles.css" rel="stylesheet">
-		<script src="./scripts.js"></script>
-        <!-- Link to your script file(s) and CSS in here somewhere -->
-    </head>
-    <body onload="showHideShots()">
-        <div>
-            Rock, Paper, Scissors, (Lizard, Spock)
-            <br><br>
-        </div>
-		<form id="opponent-and-game" onsubmit="firstsubmit(event)">
-            Which game would you like to play?
-            <br><br>
-            <input type="radio" id="rps" name="game" value="rps" checked="checked" onclick="playingrps()">
-			<label for="rps">Play rock, paper, scissors?</label>
-			<br><br>
-			<input type="radio" id="rpsls" name="game" value="rpsls" onclick="playingrpsls()">
-			<label for="rpsls">Play rock, paper, scissors, lizard, spock?</label>
-			<br><br>
-            Would you like to play against somone?
-            <br><br>
-            <input type="checkbox" id="opponent" name="playtype" value="opponent" onclick="playingopponent()">
-            <label for="opponent">Play against an opponent</label>
-            <br><br>
-            <button type="button" id="first-submit" onclick="firstsubmit()">Submit</button>
-            <br><br>
-        </form>
-        <form id="rps-input" hidden>
-            <input type="radio" id="rock" name="shot" value="rock" class="rps shots" checked="checked" onclick="playgamefromrpsorrpsls(0)">
-            <label class="shots rps">Rock</label>
-			<input type="radio" id="paper" name="shot" value="paper" class="rps shots" onclick="playgamefromrpsorrpsls(1)">
-			<label class="shots rps">Paper</label>
-			<input type="radio" id="scissors" name="shot" value="scissors" class="rps shots" onclick="playgamefromrpsorrpsls(2)">
-			<label class="shots rps">Scissors</label>
-			<input type="radio" id="lizard" name="shot" value="lizard" class="rpsls shots" onclick="playgamefromrpsorrpsls(3)">
-			<label id="lizard-label">Lizard</label>
-			<input type="radio" id="spock" name="shot" value="spock" class="rpsls shots" onclick="playgamefromrpsorrpsls(4)">
-			<label id="spock-label">Spock</label>
-            <br><br>
-            <button type="button" id="second-submit" onclick="secondsubmit()">Submit</button>
-        </form>
-        <div id="results" hidden></div>
-        <br><br>
-        <div>
-            <button type="button" id="startover" onclick="startOver()">Start Over</button>
-            <br><br>
-            <form id="rules-form">
-                <button type="button" id="rules-button" onclick="viewrules()">View Rules</button>
-                <br><br>
-                <div id="rules" hidden></div>
-                <br><br>
-                <button type="button" id="hide-rules-button" onclick="hiderules()" hidden>Hide Rules</button>
-            </form>
-        </div>
+  <head>
+    <title>Rock, Paper, Scissors!</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./scripts.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Rock, Paper, Scissors!</h1>
+    </header>
+    <main>
+      <section id="game-mode-section">
+        <h2>Choose Game Mode:</h2>
+        <select id="game-mode">
+          <option value="rps">Rock, Paper, Scissors</option>
+          <option value="rpsls">Rock, Paper, Scissors, Lizard, Spock</option>
+        </select>
+      </section>
 
+      <section id="play-mode-section">
+        <h2>Play Mode:</h2>
+        <input
+          type="radio"
+          id="random-draw"
+          name="play-mode"
+          value="random"
+          checked
+        >
+        <label for="random-draw">Random Draw</label><br>
+        <input
+          type="radio"
+          id="play-opponent"
+          name="play-mode"
+          value="opponent"
+          >
+        <label for="play-opponent">Play Opponent</label>
+      </section>
 
-    </body>
+      <section id="choices-section" style="display: none">
+        <h2>Your Choice:</h2>
+        <input type="radio" id="rock" name="choice" value="rock" checked>
+        <label for="rock"
+          ><img src="./img/rock.jpg" alt="Rock" width="50" height="50"></label>
+        <input type="radio" id="paper" name="choice" value="paper">
+        <label for="paper"
+          ><img src="./img/paper.jpg" alt="Paper" width="50" height="50"></label>
+        <input type="radio" id="scissors" name="choice" value="scissors">
+        <label for="scissors"
+          ><img src="./img/scissors.jpg" alt="Scissors" width="50" height="50"></label>
+        <input
+          type="radio"
+          id="lizard"
+          name="choice"
+          value="lizard"
+          style="display: none"
+        >
+        <label for="lizard" style="display: none">
+          <img src="./img/lizard.jpg" alt="Lizard" width="50" height="50">
+        </label>
+        <input
+          type="radio"
+          id="spock"
+          name="choice"
+          value="spock"
+          style="display: none"
+        >
+        <label for="spock" style="display: none"
+          ><img src="./img/spock.jpg" alt="Spock" width="50" height="50"
+        ></label>
+      </section>
+
+      <section id="results-section" style="display: none">
+        <h2>Results:</h2>
+        <p id="result-text"></p>
+      </section>
+
+      <div>
+        <button id="play-button" type="button">Play</button>
+        <button id="reset-button" type="button" style="display: none">Reset</button>
+      </div>
+
+      <div>
+        <h2>Rules:</h2>
+        <a
+          href="https://en.wikipedia.org/wiki/Rock_paper_scissors"
+          target="_blank"
+          >Rock, Paper, Scissors Rules</a
+        ><br>
+        <a
+          href="https://bigbangtheory.fandom.com/wiki/Rock,_Paper,_Scissors,_Lizard,_Spock"
+          target="_blank"
+          >Rock, Paper, Scissors, Lizard, Spock Rules</a
+        >
+      </div>
+    </main>
+  </body>
 </html>
