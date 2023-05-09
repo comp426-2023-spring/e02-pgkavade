@@ -1,123 +1,93 @@
-// If you would like to see some examples of similar code to make an interface interact with an API,
+// If you would like to see some examples of similar code to make an interface interact with an API, 
 // check out the coin-server example from a previous COMP 426 semester.
 // https://github.com/jdmar3/coinserver
 
-const gameModeSelect = document.getElementById("game-mode");
-const playModeInputs = document.getElementsByName("play-mode");
-const choiceInputs = document.getElementsByName("choice");
-const playButton = document.getElementById("play-button");
-const resetButton = document.getElementById("reset-button");
-const resultsSection = document.getElementById("results-section");
-const resultText = document.getElementById("result-text");
+function unhideOpts() {
+    let check = document.getElementById('opponent');
+    let gameType = document.querySelector('input[name="game-type"]:checked').id;
+    
+    if (check.checked && gameType === 'rpsls') {
+        $('.move').show();
+        $('.rpsls').show();
+        $('.rps').show();
+      } else if (check.checked && gameType === 'rps') {
+        $('.move').show();
+        $('.rps').show();
+        $('.rpsls').hide();
+      } else {
+        $('.move').hide();
+      }
+      console.log(gameType);
+      console.log(check.checked);
+}
 
-let gameMode = gameModeSelect.value;
-let playMode = playModeInputs[0].value;
+function resetClear() {
+    document.getElementById('userinput').reset();
+    $('#results').hide();
+    $('#userinput').show();
+    $('#play').show();
+    unhideOpts();
+}
 
-gameModeSelect.addEventListener("change", () => {
-  gameMode = gameModeSelect.value;
-  updateChoices();
-});
+async function startGame() {
+    $('#userinput').hide();
+    $('#play').hide();
 
-for (let input of playModeInputs) {
-  input.addEventListener("change", () => {
-    if (input.value === "random") {
-      document.getElementById("choices-section").style.display = "none";
+    let gameType = $('input[type=radio][name=game-type]:checked').val();
+    let vsOpponent = document.querySelector('#opponent').checked;
+    let shot = $('input[type=radio][name=move]:checked').val();
+
+    let baseurl = window.location.href + 'app/'
+    let url = baseurl + gameType + '/play'
+
+    if (vsOpponent) {
+        url += '/' + shot
+    }
+
+    let response = await fetch(url)
+    let result = await response.json()
+
+    if (vsOpponent) {
+        $('#results').show();
+        document.getElementById("results").innerText = 'You: ' + result.player +
+            '\n\nYour opponent: ' + result.opponent +
+            '\n\nResult: you ' + result.result.toUpperCase() +'\n';
     } else {
-      document.getElementById("choices-section").style.display = "inline-block";
+        $('#results').show();
+        document.getElementById("results").innerText = 'Your random draw is: ' + result.opponent;
     }
+    console.log(url)
+    console.log(result)
+    console.log(result.result)
 
-    playMode = input.value;
-  });
+
 }
 
-playButton.addEventListener("click", async () => {
-  const choice = getSelectedChoice();
-  const playMode = getSelectedPlayMode();
-
-  let url = `http://localhost:8080/app/${gameMode}/`;
-
-  console.log(choice, playMode, url);
-
-  if (playMode === "opponent") {
-    url += `play/${choice}`;
-  }
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    console.log(data);
-
-    displayResult(data);
-  } catch (error) {
-    alert("An error occurred. Please try again.");
-  }
-
-  //hide everything & show reset
-  document.getElementById("game-mode-section").style.display = "none";
-  document.getElementById("play-mode-section").style.display = "none";
-  document.getElementById("choices-section").style.display = "none";
-  document.getElementById("play-button").style.display = "none";
-  document.getElementById("reset-button").style.display = "inline-block";
-});
-
-resetButton.addEventListener("click", () => {
-  resultText.textContent = "";
-  resultsSection.style.display = "none";
-
-  //show everything & hide reset
-  document.getElementById("game-mode-section").style.display = "block";
-  document.getElementById("play-mode-section").style.display = "block";
-
-  if (playMode === "opponent") {
-    document.getElementById("choices-section").style.display = "block";
-  }
-
-  document.getElementById("play-button").style.display = "inline-block";
-  document.getElementById("reset-button").style.display = "none";
-});
-
-function updateChoices() {
-  if (gameMode === "rps") {
-    document.getElementById("lizard").style.display = "none";
-    document.querySelector('label[for="lizard"]').style.display = "none";
-    document.getElementById("spock").style.display = "none";
-    document.querySelector('label[for="spock"]').style.display = "none";
-  } else {
-    document.getElementById("lizard").style.display = "inline-block";
-    document.querySelector('label[for="lizard"]').style.display =
-      "inline-block";
-    document.getElementById("spock").style.display = "inline-block";
-    document.querySelector('label[for="spock"]').style.display = "inline-block";
-  }
-
-  document.getElementById("rock").checked = true;
+function viewrules() {
+    document.getElementById("rules").innerText =
+    `Rules for Rock Paper Scissors:
+    - Scissors CUTS Paper
+    - Paper COVERS Rock
+    - Rock CRUSHES Scissors
+    
+    Rules for the Lizard-Spock Expansion of Rock Paper Scissors:
+    - Scissors CUTS Paper
+    - Paper COVERS Rock
+    - Rock SMOOSHES Lizard
+    - Lizard POISONS Spock
+    - Spock SMASHES Scissors
+    - Scissors DECAPITATES Lizard
+    - Lizard EATS Paper
+    - Paper DISPROVES Spock
+    - Spock VAPORIZES Rock
+    - Rock CRUSHES Scissors`;
+    document.getElementById("rules-btn").hidden = true;
+    document.getElementById("rules").hidden = false;
+    document.getElementById("hide-rules-btn").hidden = false;
 }
 
-function getSelectedChoice() {
-  for (let input of choiceInputs) {
-    if (input.checked) {
-      return input.value;
-    }
-  }
+function hiderules() {
+    document.getElementById("rules").hidden = true;
+    document.getElementById("hide-rules-btn").hidden = true;
+    document.getElementById("rules-btn").hidden = false;
 }
-
-function getSelectedPlayMode() {
-  for (let input of playModeInputs) {
-    if (input.checked) {
-      return input.value;
-    }
-  }
-}
-
-function displayResult(result) {
-  resultsSection.style.display = "block";
-
-  if (playMode === "opponent") {
-    resultText.textContent = `You played: ${result.player.toUpperCase()}. Opponent played: ${result.opponent.toUpperCase()}. Result: ${result.result.toUpperCase()}.`;
-  } else {
-    resultText.textContent = `Random draw: ${result.player.toUpperCase()}.`;
-  }
-}
-
-updateChoices();
