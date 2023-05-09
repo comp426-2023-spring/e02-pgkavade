@@ -1,108 +1,144 @@
-/* General styles */
 body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    background-color: #fcffe7;
-  }
-  
-  header {
-    background-color: #2b3467;
-    color: #bad7e9;
+    background-color: #C1E1C1;
+    align-items:center;
+   
+}
+h1{
+    font-family: 'Impact', 'Times New Roman';
+    font-weight: 200;
+}
+
+.opponentinfo{
+    width: 250px;
+    flex-wrap: wrap;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #5f5879;
+    color: white;
+    border: 3px solid #533c42;
+}
+#opponent{
+    transform: scale(1.25);
+    color: #534a3c;
+}
+.gameStyling{
+    float:left;
+    margin-right: 20px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 500;
+    border: 2px solid #3c533c;
+    padding-left:  10px;
+    padding-right: 5px;
+}
+.gameStyling h3{
+    width: 250px;
+    flex-wrap: wrap;
+}
+#placeholder{
+    display: none;
+}
+
+#gameplay div {
+    display: table;
+}
+
+.moves{
+    float: left;
+}
+label{
+    font-size:large;
+    font-family: sans-serif;
+    font-weight: 500;
+}
+.buttons{
+   position: absolute;
+   margin-top: 300px;
+   margin-left: 40px;
+}
+.buttons button{
+    display:block;
+    background-color: #587958;
+    color: white;
+    border-radius: 10px;
+    font-size: medium;
+    border: 2px solid #3c533c;
+    padding: 5px;
+    margin: 10px;
+    font-family: sans-serif;
+}
+.buttons button:hover{
+    background-color: #112a11;
+}
+
+#play{
+    margin-top: 50px;
+}
+#play:disabled{
+    background-color: #112a11;
+    color: rgb(154, 154, 154)
+}
+.results img{
+    width: 100px;
+    height: auto;
+    filter:grayscale(50%);
+}
+.results{
+    display: none;
+    z-index: -1;
+    position: absolute;
+    margin-left: 500px;
+    align-self: center;
     text-align: center;
-    padding: 1rem;
-  }
-  
-  main {
-    align-items: center;
-    text-align: center;
-  }
-  
-  h1 {
-    margin: 0;
-  }
-  
-  main {
-    padding: 2rem;
-  }
-  
-  h2 {
-    margin-bottom: 0.5rem;
-    color: #2b3467;
-  }
-  
-  /* Sections */
-  section {
-    margin-bottom: 2rem;
-  }
-  
-  /* Game mode and play mode */
-  select,
-  input[type="radio"],
-  label {
-    margin-right: 1rem;
-  }
-  
-  /* Choices section */
-  #choices-section select {
-    display: block;
-    width: 100%;
-    margin-top: 0.5rem;
-  }
-  
-  /* Buttons */
-  button {
-    background-color: #2b3467;
-    color: #bad7e9;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
+}
+.results h3{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: x-large;
+}
+.results p{
+    font-family: sans-serif;
+    font-size: large;
+    font: bold;
+}
+
+.rules ul{
     display: inline-block;
-    margin-right: 1rem;
-  }
-  
-  button:hover {
-    background-color: #eb455f;
-    color: #fcffe7;
-  }
-  
-  /* Results section */
-  #results-section {
-    background-color: #bad7e9;
-    padding: 1rem;
-    color: #2b3467;
-  }
-  
-  /* Scoreboard */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  table,
-  th,
-  td {
-    border: 1px solid #2b3467;
-  }
-  
-  th,
-  td {
-    padding: 0.5rem;
-    text-align: center;
-  }
-  
-  th {
-    background-color: #2b3467;
-    color: #bad7e9;
-  }
-  
-  /* Rules section */
-  a {
-    color: #eb455f;
-    text-decoration: none;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
+}
+
+.rules{
+   visibility: hidden;
+    float:left;
+    margin-top: 280px;
+    margin-left: 450px;
+    flex-wrap: wrap;
+    padding: 10px;
+    background-color: #587958;
+    color: white;
+    border: 3px solid #3c533c;
+    font-family: sans-serif;
+    font-weight: 300;
+    position: absolute;
+    border-radius: 10px;
+
+    
+}
+#rpsRules{
+   vertical-align: top;
+}
+#hide{
+    display: none;
+    margin: 0px;
+    margin-left: 10px;
+    vertical-align: super;
+}
+
+#rulesTitle{
+    margin: 0px;
+    margin-left: 20px;
+}
+
+.moves img{
+   width: 75px;
+   height: auto;
+   filter:grayscale(50%);
+   display: block;
+}
