@@ -1,18 +1,18 @@
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Times New Roman', Times, serif, sans-serif;
     text-align: center;
 }
 
 h1 {
-    font-size: 3em;
-    margin-top: 1em;
+    font-size: 4em;
+    margin-top: 2em;
 }
 
 h2 {
-    font-size: 1.5em;
+    font-size: 2em;
     font-weight: bold;
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
     text-transform: uppercase;
 }
 
@@ -54,33 +54,33 @@ input[type="radio"] {
 }
 
 #gameboard button {
-    background-color: #fff;
-    border: 2px solid #999;
+    background-color: #088F8F;
+    border: 2px solid #880808;
     border-radius: 5px;
-    font-size: 1.5em;
+    font-size: 2em;
     font-weight: bold;
-    margin: 0.5em;
-    padding: 0.5em 1em;
+    margin: 1em;
+    padding: 1em 1em;
     text-transform: uppercase;
     transition: all 0.3s ease;
     width: 150px;
 }
 
 #gameboard button:hover {
-    background-color: #999;
-    color: #fff;
+    background-color: #088F8F;
+    color: #880808;
     cursor: pointer;
 }
 
 #gameboard button:active {
-    transform: scale(0.9);
+    transform: scale(1);
 }
 
 #results{
-    font-size: 2em;
-    margin-top: 2em;
+    font-size: 3em;
+    margin-top: 3em;
 }
 
 #play-again {
-    margin-top: 1em;
+    margin-top: 2em;
 }
